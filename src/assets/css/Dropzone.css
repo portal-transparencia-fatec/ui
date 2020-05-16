@@ -1,0 +1,155 @@
+body {
+  color: rgba(64, 64, 64, 0.65);
+  font: 500 1em Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizelegibility;
+  margin: 0;
+  padding: 0;
+}
+
+*:focus {
+  outline: none !important;
+}
+
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+
+.Dropzone-input-wrapper {
+  width: 100%;
+  max-width: 48px;
+}
+
+.Dropzone-input {
+  background-color: white;
+  line-height: normal;
+  align-self: center;
+  border-radius: 2px;
+  margin: 40px 0;
+  border: none;
+  height: 52px;
+  width: 100%;
+  font-size: 1.1em;
+  font-family: normal 1em Helvetica, sans-serif;
+  padding: 0px 22px;
+  color: rgb(64, 64, 64);
+  box-shadow: rgba(0, 0, 0, 0.14902) 0px 2px 2px 0px,
+    rgba(0, 0, 0, 0.0784314) 0px 0px 0px 1px;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.Dropzone-input:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 9px 0px,
+    rgba(0, 0, 0, 0.0784314) 0px 0px 0px 1px;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.Dropzone-img {
+  margin: 5px;
+  min-width: 54px;
+  max-width: 54px;
+  min-height: 54px;
+  max-height: 54px;
+  border: thin solid rgba(64, 64, 64, 0.15);
+  border-radius: 27.5px;
+  object-fit: cover;
+}
+
+.Dropzone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: thin dashed #c2c2c2;
+  background: #fcfcfc;
+  max-width: 55px;
+  max-width: 55px;
+  max-height: 55px;
+  min-height: 55px;
+  padding: 16px 11px;
+  border-radius: 27.5px;
+  margin: 40px 0;
+}
+
+.Dropzone-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.Dropzone-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.DropzoneUnidadeLogo-input-wrapper {
+  min-width: 100%;
+}
+
+.DropzoneUnidadeLogo-input {
+  background-color: white;
+  line-height: normal;
+  align-self: center;
+  border-radius: 2px;
+  margin: 10px 0;
+  border: none;
+  height: 52px;
+  width: 100%;
+  font-size: 1.1em;
+  font-family: normal 1em Helvetica, sans-serif;
+  padding: 0px 22px;
+  color: rgb(64, 64, 64);
+  box-shadow: rgba(0, 0, 0, 0.14902) 0px 2px 2px 0px,
+    rgba(0, 0, 0, 0.0784314) 0px 0px 0px 1px;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.DropzoneUnidadeLogo-input:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 9px 0px,
+    rgba(0, 0, 0, 0.0784314) 0px 0px 0px 1px;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.DropzoneUnidadeLogo-img {
+  margin: 5px;
+  width: 100%;
+  height: 100%;
+  border: thin solid rgba(64, 64, 64, 0.15);
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.DropzoneUnidadeLogo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: thin dashed #c2c2c2;
+  background: #fcfcfc;
+  max-width: 800px;
+  min-width: 100%;
+  min-height: 120px;
+  padding: 8px 5px;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+.DropzoneUnidadeLogo-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.DropzoneUnidadeLogo-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
