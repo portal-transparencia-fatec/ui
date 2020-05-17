@@ -35,40 +35,14 @@ import MenuNavigation from '../../components/MenuNavigation';
 import CustomRoute from '../../routes/CustomRoute';
 import UsuarioActions from '../../store/ducks/usuario';
 import ChatActions from '../../store/ducks/chat';
-import Agenda from './Medico/Agenda';
 import { Material } from './styles';
-import {
-  ADMINISTRADOR_GLOBAL,
-  ADMINISTRADOR,
-  FINANCEIRO,
-  MEDICO,
-  RECEPCAO,
-} from '../../libs/permissoes';
-
-import V2Chat from '../../components/V2Chat';
 import logoBranco from '../../assets/images/logo-branco.png';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import Loading from './Loading';
 import Home from './Home';
-
-import CadastroUsuario from './CadastroUsuario';
-import CadastroCondicoesPagamento from './CadastroCondicoesPagamento';
-import CadastroPaciente from './CadastroPaciente';
-import GradeHorario from './GradeHorario';
-import CadastroEmpresa from './CadastroEmpresa';
-import CadastroEmpresaUnidade from './CadastroEmpresaUnidade';
-import CadastroConvenio from './CadastroConvenio';
-import CadastroEvento from './CadastroEvento';
-import CadastroEventoConvenio from './CadastroEventoConvenio';
-import Agendamento from './Agendamento';
-import Contas from './Contas';
-import AgendamentosPaciente from './AgendamentosPaciente';
-import AgendamentoBloqueio from './AgendamentoBloqueio';
-import AuditoriaAgendamentos from './AuditoriaAgendamentos';
-import Cobrancas from './Cobrancas';
-import Faturas from './Faturas';
-import { isEmpty } from 'lodash';
 import LoadingIndicator from '../../components/LoadingIndicator';
+
+
+import Servidores from './Servidores';
 
 class Application extends Component {
   constructor(props) {
@@ -194,8 +168,15 @@ class Application extends Component {
               <CustomRoute
                 exact
                 path={`${match.path}/`}
-                routeTitle="/"
+                routeTitle="Início"
                 component={Home}
+                isMenuOpen={open}
+              />
+              <CustomRoute
+                exact
+                path={`${match.path}/servidores`}
+                routeTitle="Servidores"
+                component={Servidores}
                 isMenuOpen={open}
               />
             </Switch>

@@ -11,18 +11,38 @@ import Paper from '@material-ui/core/Paper';
 import axios from 'axios';
 
 export default class Servidores extends Component {
-
-  // Funcao que é carregada quando o componente for renderizado
-  // em tela
   async componentDidMount() {
-    const data = await axios.get('http://www.licitacao.pmmc.com.br/Transparencia/vencimentos2');
-    console.log(data);
-    // await this.setState({ servidores });
+    const {data: servidores } = await axios.get('http://a8131c26.ngrok.io/servidores/');
+    this.setState({ servidores });
   }
 
   state = {
     nome: 'André',
     servidores: [],
+
+    search: '',
+  }
+
+  filterServidor = (servidor) => {
+    const { search } = this.state;
+
+    if (!String(search).trim()) {
+      return true;
+    }
+
+    if (new RegExp(search, 'ig').test(servidor.nome)) {
+      return true;
+    }
+
+    if (new RegExp(search, 'ig').test(servidor.rgf)) {
+      return true;
+    }
+
+    if (new RegExp(search, 'ig').test(servidor.cargo)) {
+      return true;
+    }
+
+    return false;
   }
 
   render() {
@@ -34,12 +54,13 @@ export default class Servidores extends Component {
             label="Pesquise pelo nome do funcionário"
             variant="outlined"
             fullWidth
+            value={this.state.search}
+            onChange={(event) => this.setState({ search: event.target.value })}
           />
         </Grid>
 
         <Grid item sm={12} md={12} lg={12}>
           <Paper>
-            {this.state.animais}
             <Table style={{ width: '100%' }}>
               <TableHead>
                 <TableRow>
@@ -53,15 +74,15 @@ export default class Servidores extends Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {this.state.servidores.map(servidor => (
+                {this.state.servidores.filter(this.filterServidor).map(servidor => (
                   <TableRow>
                     <TableCell align="center">{servidor.nome}</TableCell>
-                    <TableCell align="center">RGF</TableCell>
-                    <TableCell align="center">Cargo</TableCell>
-                    <TableCell align="center">Regime</TableCell>
-                    <TableCell align="center">Salário Bruto</TableCell>
-                    <TableCell align="center">Salário Líquido</TableCell>
-                    <TableCell align="center">Desconto</TableCell>
+                    <TableCell align="center">{servidor.rgf}</TableCell>
+                    <TableCell align="center">{servidor.cargo}</TableCell>
+                    <TableCell align="center">{servidor.regime}</TableCell>
+                    <TableCell align="center">{servidor.bruto}</TableCell>
+                    <TableCell align="center">{servidor.liquido}</TableCell>
+                    <TableCell align="center">{servidor.desconto}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
