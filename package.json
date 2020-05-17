@@ -68,7 +68,7 @@
     "yup": "^0.26.10"
   },
   "scripts": {
-    "start": "BROWSER='google-chrome-stable' LANG='pt_BR.UTF-8' react-scripts start"
+    "start": "react-scripts start"
   },
   "eslintConfig": {
     "extends": "react-app"
