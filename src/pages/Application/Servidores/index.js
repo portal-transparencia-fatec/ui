@@ -51,7 +51,7 @@ export default class Servidores extends Component {
       <Grid container spacing={3} style={{ padding: 20 }}>
         <Grid item sm={12} md={12} lg={12}>
           <TextField
-            label="Pesquise pelo nome do funcionário"
+            label="Pesquisar..."
             variant="outlined"
             fullWidth
             value={this.state.search}
