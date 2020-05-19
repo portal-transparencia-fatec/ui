@@ -17,7 +17,6 @@ export default class Servidores extends Component {
   }
 
   state = {
-    nome: 'André',
     servidores: [],
 
     search: '',
