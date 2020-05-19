@@ -4,8 +4,8 @@ import {
 import { eventChannel } from 'redux-saga';
 
 import ChatActions, { ChatTypes } from '../ducks/chat';
-import Sockets from '../../services/ws';
-import ChatService from '../../services/Chat';
+import Sockets from '../../services/api';
+import ChatService from '../../services/api';
 
 const { socketChat } = Sockets;
 

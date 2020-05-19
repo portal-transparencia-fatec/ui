@@ -13,7 +13,7 @@ import TextInput from '../TextInput';
 
 import ChatActions from '../../../../store/ducks/chat';
 import ChatService from '../../../../services/Chat';
-import Sockets from '../../../../services/ws';
+import Sockets from '../../../../services';
 
 import Material, {
   Container,

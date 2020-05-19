@@ -14,7 +14,7 @@ import AttachmentIcon from '@material-ui/icons/Attachment';
 import CloseIcon from '@material-ui/icons/Close';
 
 import ChatService from '../../../../services/Chat';
-import Sockets from '../../../../services/ws';
+import Sockets from '../../../../services';
 
 import {
   useStyles, Container, ContainerInput, ListaAnexos, Anexo,

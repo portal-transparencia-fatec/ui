@@ -2,7 +2,7 @@ import {
   takeLatest, put, call, select,
 } from 'redux-saga/effects';
 import { replace } from 'connected-react-router';
-import UsuarioService from '../../services/Usuario';
+import UsuarioService from '../../services/api';
 
 import UsuarioActions, { UsuarioTypes } from '../ducks/usuario';
 import NotifierActions from '../ducks/notifier';

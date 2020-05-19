@@ -28,7 +28,6 @@ import {
 import NotificationActions from '../../../store/ducks/notifier';
 import Material, { GridImage, GridImage2 } from './styles';
 import { Container } from '../../../styles/global';
-import KatsukaiService from '../../../services/Katsukai';
 
 class Home extends Component {
   state = {

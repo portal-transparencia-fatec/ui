@@ -12,7 +12,7 @@ import axios from 'axios';
 
 export default class Servidores extends Component {
   async componentDidMount() {
-    const {data: servidores } = await axios.get('http://a8131c26.ngrok.io/servidores/');
+    const {data: servidores } = await axios.get('https://portal-transparencia-fatec-api.glitch.me/servidores/');
     this.setState({ servidores });
   }
 

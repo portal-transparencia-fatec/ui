@@ -30,7 +30,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import HomeIcon from '@material-ui/icons/Home';
 import ChatIcon from '@material-ui/icons/Chat';
-import KatsukaiService from '../../services/Katsukai';
+import KatsukaiService from '../../services/api';
 import MenuNavigation from '../../components/MenuNavigation';
 import CustomRoute from '../../routes/CustomRoute';
 import UsuarioActions from '../../store/ducks/usuario';
