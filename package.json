@@ -68,7 +68,7 @@
     "yup": "^0.26.10"
   },
   "scripts": {
-    "start": "react-scripts start"
+    "start": "REACT_APP_V2_API_URL='http://localhost:7700/api' LANG='pt_BR.UTF-8' react-scripts start"
   },
   "eslintConfig": {
     "extends": "react-app"

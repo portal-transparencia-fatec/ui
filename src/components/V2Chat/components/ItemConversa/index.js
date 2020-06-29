@@ -33,7 +33,7 @@ class ItemConversa extends Component {
    * Retorna o número de mensagens pendentes
    */
   getCountMensagensPendentes = (conversa) => {
-    const usuario = JSON.parse(localStorage.getItem('@clin:usuario'));
+    const usuario = JSON.parse(localStorage.getItem('@:usuario'));
     const mensagensPendentes = (conversa.mensagens
       .filter(({ visualizadaEm, remetente }) => (!visualizadaEm
           && usuario.id !== remetente.id))) || [];

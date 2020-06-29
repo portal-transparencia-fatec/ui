@@ -12,7 +12,7 @@ export const rootURL = process.env.REACT_APP_V2_API_URL;
 function accessTokenInterceptor(api) {
   api.interceptors.request.use((req) => {
     const config = req;
-    const token = localStorage.getItem('@clin:accessToken');
+    const token = localStorage.getItem('@:accessToken');
 
     if (token) {
       config.headers = {

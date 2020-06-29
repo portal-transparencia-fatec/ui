@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,6 +12,12 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import NotificationActions from '../../../store/ducks/notifier';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import withStyles from '@material-ui/core/styles/withStyles';
+import { Material } from './styles';
+import UsuariosService from '../../../services/Usuarios'
 
 function Copyright() {
   return (
@@ -26,115 +32,153 @@ function Copyright() {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
 
-export default function SignUp() {
-  const classes = useStyles();
+class Cadastro extends Component {
 
-  return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Digite suas informações
-        </Typography>
-        <form className={classes.form} noValidate>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="fname"
-                name="firstName"
-                variant="outlined"
-                required
-                fullWidth
-                id="firstName"
-                label="Nome"
-                autoFocus
-              />
+  state = {
+    loading: false,
+    email: '',
+    senha: '',
+    nome: '',
+    sobrenome: '',
+  }
+  
+
+  handleChange = ({ target: { name, value } }) => {
+    this.setState({ [name]: value })
+  }
+
+  handleSubmit = async () => {
+    const { email, senha, nome, sobrenome } = this.state;
+    const { notify, history } = this.props;
+
+    try {
+      if(email && senha && nome && sobrenome) {
+        this.setState({ loading: true })
+        await UsuariosService.salvar({
+          email,
+          senha,
+          nome,
+          sobrenome
+        })
+        notify('Usuário criado com sucesso!', { variant: 'success' })  
+        history.push('/app/login')
+      } else {
+        notify('Preencha todos os campos!', { variant: 'warning' })
+      }
+    } catch (err) {
+      notify('Ocorreu um erro tentar realizar o cadastro', { variant: 'error' })
+    } finally {
+      this.setState({ loading: false }) 
+    }
+  }
+
+  render() {
+    const { loading } = this.state;
+    const { classes } = this.props
+    
+    return (
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Digite suas informações
+          </Typography>
+          <form className={classes.form} noValidate>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  autoComplete="fname"
+                  name="nome"
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="nome"
+                  label="Nome"
+                  autoFocus
+                  onChange={this.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="sobrenome"
+                  label="Sobrenome"
+                  name="sobrenome"
+                  autoComplete="sobrenome"
+                  onChange={this.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Endereço de Email"
+                  name="email"
+                  autoComplete="email"
+                  onChange={this.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="senha"
+                  label="Senha"
+                  type="password"
+                  id="password"
+                  onChange={this.handleChange}
+                  autoComplete="current-password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={<Checkbox value="allowExtraEmails" color="primary" />}
+                  label="Eu aceito receber e-mails com notificações sobre novidades no site."
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Sobrenome"
-                name="lastName"
-                autoComplete="lname"
-              />
+            <Button
+              disabled={loading}
+              type="button"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={this.handleSubmit}
+            >
+              Criar Conta
+            </Button>
+            <Grid container justify="flex-end">
+              <Grid item>
+                <Link href="http://localhost:3000/app/login" variant="body2">
+                  Você já tem uma conta? Clique para entrar.
+                </Link>
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="email"
-                label="Endereço de Email"
-                name="email"
-                autoComplete="email"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Senha"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="Eu aceito receber e-mails com notificações sobre promoções e/ou alterações no site."
-              />
-            </Grid>
-          </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Criar Conta
-          </Button>
-          <Grid container justify="flex-end">
-            <Grid item>
-              <Link href="http://localhost:3000/app/login" variant="body2">
-                Você já tem uma conta? Clique para entrar.
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Box mt={5}>
-        <Copyright />
-      </Box>
-    </Container>
-  );
+          </form>
+        </div>
+        <Box mt={5}>
+          <Copyright />
+        </Box>
+      </Container>
+    );
+  } 
 }
+
+const mapDispatchToProps = dispatch => ({
+  notify: (message, options) => dispatch(NotificationActions.notify(message, options)),
+});
+
+export default compose(
+  connect(null, mapDispatchToProps),
+  withStyles(Material, { withTheme: true }),
+)(Cadastro)

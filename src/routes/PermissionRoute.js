@@ -6,7 +6,7 @@ const PermissionRoute = ({
   permissions: routePermissions,
   ...rest
 }) => {
-  // const usuario = JSON.parse(localStorage.getItem('@clin:usuario'));
+  // const usuario = JSON.parse(localStorage.getItem('@:usuario'));
   // const { location } = rest;
 
   // if (!usuario && !location.pathname.includes('/app')) {

@@ -139,7 +139,7 @@ class ItemMensagem extends Component {
 
   render() {
     const { classes, mensagem, index } = this.props;
-    const usuarioLogado = JSON.parse(localStorage.getItem('@clin:usuario'));
+    const usuarioLogado = JSON.parse(localStorage.getItem('@:usuario'));
     const isMe = mensagem.remetente.id === usuarioLogado.id;
     const dateDisplay = this.handleDateDisplay(mensagem, index);
 

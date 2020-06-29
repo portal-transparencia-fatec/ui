@@ -10,8 +10,14 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import axios from 'axios';
 import { debounce } from 'lodash';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import ServidoresService from '../../../services/Servidores'
+import NotificationActions from '../../../store/ducks/notifier';
+import withStyles from '@material-ui/core/styles/withStyles';
+import { Material } from './styles';
 
-export default class Servidores extends Component {
+class Servidores extends Component {
   constructor(props) {
     super(props);
 
@@ -28,8 +34,15 @@ export default class Servidores extends Component {
   }
 
   fetchServidores = async () => {
-    const {data: servidores } = await axios.get('https://portal-transparencia-fatec-api.glitch.me/servidores/');
-    this.setState({ servidores });
+    const { notify } = this.props;
+
+    try {
+      const servidores = await ServidoresService.getAll();
+      this.setState({ servidores });
+    } catch (err) {
+      notify('Não foi possível buscar a lista de servidores', { variant: 'error' })
+    }
+
   }
 
 
@@ -113,3 +126,12 @@ export default class Servidores extends Component {
     );
   }
 }
+
+const mapDispatchToProps = dispatch => ({
+  notify: (message, options) => dispatch(NotificationActions.notify(message, options)),
+});
+
+export default compose(
+  connect(null, mapDispatchToProps),
+  withStyles(Material, { withTheme: true }),
+)(Servidores);

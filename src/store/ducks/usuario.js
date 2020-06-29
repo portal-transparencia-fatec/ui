@@ -48,8 +48,8 @@ export const reducer = createReducer(INITIAL_STATE, {
     .merge(state, { isSigning: false, error: true, message: error }),
 
   [Types.SIGNOUT]: (state) => {
-    localStorage.removeItem('@clin:accessToken');
-    localStorage.removeItem('@clin:usuario');
+    localStorage.removeItem('@:accessToken');
+    localStorage.removeItem('@:usuario');
     return Immutable.merge(state, INITIAL_STATE);
   },
   [Types.SET_UNIDADES]: (state, { unidades }) => Immutable

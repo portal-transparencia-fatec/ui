@@ -58,7 +58,7 @@ const iconSize = 28;
  * Função que valida se o usuário possui permissões
  */
 const hasPermission = (...menuPermissions) => {
-  const usuario = JSON.parse(localStorage.getItem('@clin:usuario'));
+  const usuario = JSON.parse(localStorage.getItem('@:usuario'));
 
   if (!usuario) {
     return false;

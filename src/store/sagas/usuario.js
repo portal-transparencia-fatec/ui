@@ -18,10 +18,10 @@ function* setUnidades(user) {
 function* signing({ login, senha }) {
   try {
     const { usuario, accessToken } = yield call([UsuarioService, 'login'], login, senha);
-    localStorage.setItem('@clin:accessToken', accessToken);
+    localStorage.setItem('@:accessToken', accessToken);
     // const usuario = yield call(UsuarioService.whoami);
     yield call(setUnidades, usuario);
-    localStorage.setItem('@clin:usuario', JSON.stringify(usuario));
+    localStorage.setItem('@:usuario', JSON.stringify(usuario));
 
     yield put(UsuarioActions.signingSuccess());
     yield put(replace('/app'));
@@ -48,12 +48,12 @@ function* signout() {
 }
 
 function* checkAuth() {
-  const token = localStorage.getItem('@clin:accessToken');
+  const token = localStorage.getItem('@:accessToken');
 
   if (!token) {
     // return yield put(replace('/login'));
   }
-  yield call(setUnidades, JSON.parse(localStorage.getItem('@clin:usuario')));
+  yield call(setUnidades, JSON.parse(localStorage.getItem('@:usuario')));
   yield put(UsuarioActions.signingSuccess());
 
   const { pathname } = yield select(state => state.router.location);

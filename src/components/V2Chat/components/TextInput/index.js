@@ -98,7 +98,7 @@ function TextInput({
 
     if (!texto) return;
 
-    const remetente = JSON.parse(localStorage.getItem('@clin:usuario'));
+    const remetente = JSON.parse(localStorage.getItem('@:usuario'));
     /**
      * Monta o JSON no formato da mensagem
      * que deve ser enviada via WS

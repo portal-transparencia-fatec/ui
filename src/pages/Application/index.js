@@ -52,7 +52,7 @@ class Application extends Component {
     super(props);
     
     this.state = {
-      open: true,
+      open: false,
       hasError: false,
       loading: false, 
     }

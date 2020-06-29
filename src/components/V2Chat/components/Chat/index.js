@@ -125,7 +125,7 @@ class Chat extends Component {
   subscribeMensagens = () => {
     const { socketChat } = Sockets;
     const { conversaId } = this.props;
-    // const usuario = JSON.parse(localStorage.getItem('@clin:usuario'));
+    // const usuario = JSON.parse(localStorage.getItem('@:usuario'));
 
     socketChat.socket.on(`conversa.${conversaId}.chat_mensagem`, (mensagem) => {
       this.adicionarMensagem(mensagem);
@@ -149,7 +149,7 @@ class Chat extends Component {
     const { socketChat } = Sockets;
     const { mensagens } = this.state;
     const { conversaId } = this.props;
-    const usuario = JSON.parse(localStorage.getItem('@clin:usuario'));
+    const usuario = JSON.parse(localStorage.getItem('@:usuario'));
 
     /**
      * Filtra as mensagens visualizadas

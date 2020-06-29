@@ -122,7 +122,7 @@ function* conversasSubscriptionEvents() {
  * Realiza a conexão no chat (online)
  */
 function* connect() {
-  const { id, unidades } = JSON.parse(localStorage.getItem('@clin:usuario'));
+  const { id, unidades } = JSON.parse(localStorage.getItem('@:usuario'));
   if (unidades && unidades.length) {
     const [{ unidade }] = unidades;
 

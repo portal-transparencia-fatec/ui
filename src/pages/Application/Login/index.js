@@ -1,4 +1,33 @@
-import React from 'react';
+
+/* eslint-disable react/jsx-one-expression-per-line */
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable no-undef */
+import React, { Component, Fragment } from 'react';
+import ReactDOM from 'react-dom';
+import ApexCharts from 'apexcharts';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import withStyles from '@material-ui/core/styles/withStyles';
+import LoadingIndicator from '../../../components/LoadingIndicator';
+import {
+  RootRef,
+  Grid,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@material-ui/core';
+import moment from 'moment';
+import {
+  telFormatter,
+  celFormatter,
+} from '../../../libs/utils';
+
+import NotificationActions from '../../../store/ducks/notifier';
+import { Container } from '../../../styles/global';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -6,15 +35,14 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
-import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import { rootURL as baseURL } from '../../../services/api';
+import { Material } from './styles';
+import axios from 'axios';
 
-
-function Copyright() {
+const Copyright = () => {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Equipe J © '}
@@ -27,42 +55,51 @@ function Copyright() {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    height: '100vh',
-  },
-  image: {
-    backgroundImage: 'url(https://source.unsplash.com/random)',
-    backgroundRepeat: 'no-repeat',
-    backgroundColor:
-      theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  },
-  paper: {
-    margin: theme.spacing(8, 4),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Compatibilidade com o IE11
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
+class Login extends Component {
+  state = {
+    loading: false,
+    email: '',
+    senha: '',
+  }
+  
+  componentDidMount() {
 
-export default function SignInSide() {
-  const classes = useStyles();
+  }
 
-  return (
-    <Grid container component="main" className={classes.root}>
+  handleChange = ({ target: { name, value } }) => {
+    this.setState({ [name]: value })
+  }
+
+  handleSubmit = async () =>  {
+    const { email, senha } = this.state;
+    const { notify, history } = this.props;
+      
+    try {
+      this.setState({ loading: true })
+      const { data: { accessToken } } = await axios.post(`${baseURL}/login`, {
+        email, senha
+      })
+
+
+      localStorage.setItem('@:accessToken', accessToken);
+      localStorage.setItem('@:userInfo', email);
+
+      history.push('/app/servidores')
+    } catch (err) {
+      notify('Login ou senha inválidos', { variant: 'warning' });
+    } finally {
+      this.setState({ loading: false })
+    }
+  }
+
+  render() {
+    const { classes } = this.props;
+    const { loading, email, senha } = this.state;
+    
+    return (
+      <Grid>
+        <LoadingIndicator loading={loading} />
+        <Grid container component="main" className={classes.root}>
       <CssBaseline />
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -84,28 +121,33 @@ export default function SignInSide() {
               name="email"
               autoComplete="email"
               autoFocus
+              value={email}
+              onChange={this.handleChange}
             />
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              name="password"
+              name="senha"
               label="Senha"
               type="password"
-              id="password"
+              id="senha"
               autoComplete="current-password"
+              onChange={this.handleChange}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Lembre-me"
             />
             <Button
-              type="submit"
+              disabled={loading}
+              type="button"
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={this.handleSubmit}
             >
               Entrar
             </Button>
@@ -128,5 +170,17 @@ export default function SignInSide() {
         </div>
       </Grid>
     </Grid>
-  );
+      </Grid>
+    );
+  }
 }
+
+
+const mapDispatchToProps = dispatch => ({
+  notify: (message, options) => dispatch(NotificationActions.notify(message, options)),
+});
+
+export default compose(
+  connect(null, mapDispatchToProps),
+  withStyles(Material, { withTheme: true }),
+)(Login)

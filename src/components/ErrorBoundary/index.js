@@ -25,7 +25,7 @@ class ErrorBoundary extends Component {
   render() {
     const { children } = this.props;
     const { hasError, eventId } = this.state;
-    const usuarioLogado = JSON.parse(localStorage.getItem('@clin:usuario'));
+    const usuarioLogado = JSON.parse(localStorage.getItem('@:usuario'));
 
     if (hasError && usuarioLogado) {
       const { nome: name, email } = usuarioLogado;
