@@ -9,18 +9,38 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import axios from 'axios';
+import { debounce } from 'lodash';
 
 export default class Servidores extends Component {
-  async componentDidMount() {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      servidores: [],
+      search: '',
+    }
+
+    this.fetchSearch = debounce(this.fetchSearch, 1000);
+  }
+
+  componentDidMount() {
+    this.fetchServidores()
+  }
+
+  fetchServidores = async () => {
     const {data: servidores } = await axios.get('https://portal-transparencia-fatec-api.glitch.me/servidores/');
     this.setState({ servidores });
   }
 
-  state = {
-    nome: 'André',
-    servidores: [],
 
-    search: '',
+  handleChangeSearch = ({ target: { value: searchInput } }) => {
+    this.setState({ searchInput })
+    this.fetchSearch(searchInput);
+  }
+
+
+  fetchSearch = (search) => {
+    this.setState({ search })
   }
 
   filterServidor = (servidor) => {
@@ -54,8 +74,8 @@ export default class Servidores extends Component {
             label="Pesquisar..."
             variant="outlined"
             fullWidth
-            value={this.state.search}
-            onChange={(event) => this.setState({ search: event.target.value })}
+            value={this.state.searchInput}
+            onChange={this.handleChangeSearch}
           />
         </Grid>
 
