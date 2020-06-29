@@ -38,7 +38,6 @@ export default class Servidores extends Component {
     this.fetchSearch(searchInput);
   }
 
-
   fetchSearch = (search) => {
     this.setState({ search })
   }
