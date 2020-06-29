@@ -43,6 +43,9 @@ import LoadingIndicator from '../../components/LoadingIndicator';
 
 
 import Servidores from './Servidores';
+import Login from './Login';
+import Cadastro from './Cadastro';
+import Recuperacao from './Recuperacao';
 
 class Application extends Component {
   constructor(props) {
@@ -177,6 +180,27 @@ class Application extends Component {
                 path={`${match.path}/servidores`}
                 routeTitle="Servidores"
                 component={Servidores}
+                isMenuOpen={open}
+              />
+              <CustomRoute
+                exact
+                path={`${match.path}/login`}
+                routeTitle="Login"
+                component={Login}
+                isMenuOpen={open}
+              />
+              <CustomRoute
+                exact
+                path={`${match.path}/cadastro`}
+                routeTitle="Cadastro"
+                component={Cadastro}
+                isMenuOpen={open}
+              />
+              <CustomRoute
+                exact
+                path={`${match.path}/recuperacao`}
+                routeTitle="Recuperacao"
+                component={Recuperacao}
                 isMenuOpen={open}
               />
             </Switch>
