@@ -19,6 +19,10 @@ export default createGlobalStyle`
     overflow: hidden;
     margin-top: 300px !important,
   }
+
+  /* .MuiTablePagination-input {
+    display: none !important;
+  } */
 `;
 
 export const Container = styled.div`

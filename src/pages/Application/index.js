@@ -182,6 +182,15 @@ class Application extends Component {
                 component={Servidores}
                 isMenuOpen={open}
               />
+
+              <CustomRoute
+                exact
+                path={`${match.path}/servidores/comparar/:rgf?`}
+                routeTitle=""
+                component={Servidores}
+                isMenuOpen={open}
+              />
+
               <CustomRoute
                 exact
                 path={`${match.path}/login`}

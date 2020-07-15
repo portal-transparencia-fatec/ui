@@ -4,7 +4,7 @@
 
 // if (process.env.NODE_ENV !== 'production') {
 //   Reactotron.configure({
-//     name: 'Clin V2Saude',
+//     name: 'Portal Transparencia',
 //   })
 //     .use(reactotronRedux())
 //     .use(sagaPlugin())

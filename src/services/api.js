@@ -26,10 +26,6 @@ function accessTokenInterceptor(api) {
   });
 }
 
-/**
- * Service para acesso a API do Clin
- */
-
 const api = axios.create({
   baseURL: rootURL,
   headers: {
