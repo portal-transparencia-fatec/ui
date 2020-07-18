@@ -43,6 +43,7 @@ import LoadingIndicator from '../../components/LoadingIndicator';
 
 
 import Servidores from './Servidores';
+import CompararServidores from './CompararServidores';
 import Login from './Login';
 import Cadastro from './Cadastro';
 import Recuperacao from './Recuperacao';
@@ -187,7 +188,7 @@ class Application extends Component {
                 exact
                 path={`${match.path}/servidores/comparar/:rgf?`}
                 routeTitle=""
-                component={Servidores}
+                component={CompararServidores}
                 isMenuOpen={open}
               />
 

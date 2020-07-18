@@ -29,10 +29,10 @@ let theme = createMuiTheme({
   },
   palette: {
     primary: {
-      main: '#1976d2',
+      main: 'rgba(14, 70, 116)',
     },
     secondary: {
-      main: '#e1e1e1',
+      main: '#909090',
     },
     button: {
       default: {

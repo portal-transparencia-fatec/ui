@@ -12,7 +12,7 @@ export const Material = theme => ({
   appBar: {
     display: 'flex',
     justifyContent: 'center',
-    backgroundColor: '#1976d2',
+    backgroundColor: 'rgba(14, 70, 116)',
     height: '7vh',
     // backgroundColor: theme.palette.grey[300],
     // color: theme.palette.grey[800],

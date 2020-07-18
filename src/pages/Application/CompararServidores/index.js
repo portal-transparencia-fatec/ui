@@ -33,7 +33,7 @@ import { connect } from 'react-redux';
 import ServidoresService from '../../../services/Servidores'
 import NotificationActions from '../../../store/ducks/notifier';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { Material, Divider } from './styles';
+import { Material, CustomButton } from './styles';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import LoadingIndicator from '../../../components/LoadingIndicator';
 import ModalSelect from '../../../components/ModalSelect';
@@ -51,8 +51,8 @@ import {
 } from 'react-accessible-accordion';
 import '../../../assets/css/accordion.css';
 import CloseIcon from '@material-ui/icons/Close';
-
-
+import AddIcon from '@material-ui/icons/Add';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
@@ -60,13 +60,19 @@ import ReactFC from 'react-fusioncharts';
 
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const B = ({ children }) => <strong>{children}</strong>;
+const B = ({ children, ...props }) => <strong {...props}>{children}</strong>;
 
-class Servidores extends Component {
+class CompararServidores extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      chartBruto: {},
+      chartLiquido: {},
+      chartDesconto: {},
+
+      servidoresSelecionados: [],
+
       chartSalario: {},
 
       modalDetalhesServidor: false,
@@ -86,7 +92,7 @@ class Servidores extends Component {
       search: '',
 
       page: 0,
-      rowsPerPage: 10,
+      rowsPerPage: 5707,
       rowsPerPageOptions: [10, 25, 50, 100],
 
       referencias: [
@@ -123,17 +129,16 @@ class Servidores extends Component {
       ]
     }
 
-    this.fetchSearch = debounce(this.fetchSearch, 400);
 
+    this.fetchSearch = debounce(this.fetchSearch, 400);
   }
 
   componentDidMount() {
-    const{ referencias, page, rowsPerPage } = this.state;
-    
-    const value = referencias[referencias.length -1].value;
-    this.fetchServidores(page, rowsPerPage)
-    this.fetchCargos();
-    this.fetchRegimes();
+    const { rgf } = this.props.match.params;
+
+    // if(rgf) {
+    //   this.fetchGraficoByRgf(rgf)
+    // }
   }
   
   componentDidUpdate(prevProps, prevState) {
@@ -145,19 +150,31 @@ class Servidores extends Component {
         cargo: cargo|| undefined,
       }
 
-      this.fetchServidores(page, rowsPerPage, filters)
-    }
-
-
-    if (modalDetalhesServidor !== prevState.modalDetalhesServidor) {
-      this.fetchGraficoRenda()
+      // this.fetchServidores(page, rowsPerPage, filters)
     }
   }
 
 
-  fetchGraficoRenda = async () => {
+  fetchGraficoServidores = async () => {
+    const { servidoresSelecionados } = this.state;
+
+    const rgfs = servidoresSelecionados.map(({ rgf }) => rgf);
+
+    try {
+      this.setState({ loading: true })
+      const { chartBruto, chartLiquido, chartDesconto, } =  await ServidoresService.getAllSalariosByRgfs(rgfs);
+      await this.setState({ modalSelectServidor: false, chartBruto, chartLiquido, chartDesconto })
+    
+      this.refs.graficos.scrollIntoView({ behavior: "smooth"})
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+
+
+  fetchGraficoByRgf = async (rgf) => {
     const { notify } = this.props;
-    const { servidorSelecionado: { rgf } } = this.state;
     try {
       this.setState({ loading: true })
       
@@ -235,8 +252,15 @@ class Servidores extends Component {
     this.fetchSearch(searchInput);
   }
 
-  fetchSearch = (search) => {
-    this.setState({ search })
+  fetchSearch = async (nome) => {
+    try {
+      if(nome.length >= 5) {
+        const { servidores } = await ServidoresService.getAllByNome(nome);
+        this.setState({ servidores })
+      }
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   filterServidor = (servidor) => {
@@ -335,8 +359,8 @@ class Servidores extends Component {
               label="RGF:"
               variant="outlined"
               fullWidth
-              // value={this.state.searchInput}
-              // onChange={this.handleChangeSearch}
+              value={this.state.searchInput}
+              onChange={this.handleChangeSearch}
               InputLabelProps={{ 
                 shrink: true
               }}
@@ -435,26 +459,39 @@ class Servidores extends Component {
     this.setState({ modalDetalhesServidor: false, editarAnchorEl: null, servidorSelecionado: {} });
   }
 
-  renderModalDetalhesServidor = () => {
-    const { classes } = this.props;
-    const { servidorSelecionado,modalDetalhesServidor } = this.state;
 
-    const handleClose = () => { this.setState({ modalDetalhesServidor: false })}
+  handleServidoresChange = (event, servidorSelecionado) => {
+    this.setState({ servidoresSelecionados: [...this.state.servidoresSelecionados, servidorSelecionado ] })
+  }
+
+  handleDeleteServidor = (index) => {
+    const { servidoresSelecionados } = this.state;
+
+    servidoresSelecionados.splice(index, 1);
+    this.setState({ servidoresSelecionados })
+  }
+
+  renderModalSelectServidores = () => {
+    const { classes } = this.props; 
+    const { modalSelectServidor } = this.state;
+
+    const handleClose = () => { this.setState({ modalSelectServidor: false })}
     return (
       <Dialog
-        open={modalDetalhesServidor}
+        open={modalSelectServidor}
         onClose={handleClose}
         maxWidth="100vw"
       >
       <DialogTitle>
         <Grid container direction="row">
-          <Grid item sm={4} md={4} lg={4} style={{ width: '10%' }} />
-          <Grid item container justify="center" alignItems="center" sm={4} md={4} lg={4} style={{ width: '80%' }} >
-            <B>{servidorSelecionado.nome}</B>
+          <Grid item container justify="flex-start" alignItems="center" sm={10} md={10} lg={10} style={{ width: '90%', fontSize: '20px', color: 'rgba(14, 70, 116)' }} >
+            Adicionar Servidor
           </Grid>
-          <Grid item container justify="flex-end" alignItems="center" sm={4} md={4} lg={4} style={{ width: '10%' }}>
+          <Grid item container justify="flex-end" alignItems="center" sm={2} md={2} lg={2} style={{ width: '10%' }}>
             <IconButton
               onClick={handleClose}
+              className={classes.teste}
+              style={{ backgroundColor: 'rgba(14, 70, 116)', color: '#fff' }}
             >
               <CloseIcon className={classes.icons} />
             </IconButton>
@@ -462,32 +499,120 @@ class Servidores extends Component {
         </Grid>
       </DialogTitle>
         <DialogContent>
-          <DialogContentText style={{ minHeight: '70vh', minWidth: '90vw' }}>
-            <Grid container spacing={2} direction="row">
+          <DialogContentText style={{ minHeight: '70vh', minWidth: '40vw', maxWidth: '40vw' }}>
+            <Grid container spacing={1} alignItems="center" justify="center">
+              <Grid item sm={12} md={12} lg={12}>
+                <TextField
+                  label="Nome:"
+                  variant="outlined"
+                  fullWidth
+                  InputLabelProps={{ 
+                    shrink: true
+                  }}
+                  value={this.state.searchInput}
+                  onChange={this.handleChangeSearch}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton>
+                          <Search />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
 
-              {!isEmpty(this.state.chartSalario) && (
-                <>
-                  <Grid item sm={12} md={12} lg={12}>
-                    <ReactFC {...this.state.chartSalario} />
+              {!isEmpty(this.state.servidoresSelecionados) && (
+                <Grid item sm={12} md={12} lg={12}>
+                  <Grid item container direction="row" alignItems="center" sm={12} md={12} lg={12} style={{ backgroundColor: 'rgba(240, 240, 240)', border: '0.5px solid rgba(191, 191, 191)', minHeight: '50px', borderRadius: '2.5px' }}>
+                    {this.state.servidoresSelecionados.map((servidor, index) => (
+                      <Chip
+                        style={{ margin: 4 }}
+                        key={index}
+                        label={`${servidor.nome} (${servidor.rgf})`}
+                        onDelete={() => this.handleDeleteServidor(index)}
+                        className={classes.chip}
+                      />
+                    ))}
                   </Grid>
-
-                  <Grid item sm={12} md={12} lg={12}>
-                    <Button
-                      fullWidth
-                      color="primary"
-                      variant="contained"
-                      onClick={this.handleNavigate}
-                    >
-                      Comparar com outros servidores
-                    </Button>
-                  </Grid>
-                </>
+                </Grid>
               )}
+
+              <Grid item sm={12} md={12} lg={12}>
+                <Grid item sm={12} md={12} lg={12} style={{ backgroundColor: '#fff', border: '0.5px solid rgba(191, 191, 191)', minHeight: '55vh', borderRadius: '2.5px', overflow: 'hidden' }}>
+                  {this.state.servidores.map((servidor, index) => (
+                    <Grid item container spacing={2} direction="row" sm={12} md={12} lg={12} style={{ borderTop: '0.5px solid rgba(191, 191, 191)', minHeight: '12vh', maxHeight: '12vh', overflow: 'hidden' }}>
+                      <Grid item  container justify="center" alignItems="center" sm={10} md={10} lg={10}>
+                        <Grid item  container direction="row" justify="flex-start" alignItems="center" sm={12} md={12} lg={12} style={{ flexWrap: 'nowrap', padding: '0px 5px' }}>
+                          <Typography style={{ textTransform: 'capitalize', color: 'rgb(56, 158, 148)' }}>{`${String(servidor.nome)} `}</Typography>
+                          <Typography style={{ fontSize: '30px', margin: '0px 5px'}}>—</Typography>
+                          <Typography>{` ${servidor.cargo}`}</Typography>
+                        </Grid>
+
+                        <Grid item  container justify="flex-start" alignItems="center" sm={12} md={12} lg={12} style={{ padding: '0 5px' }}>
+                          <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>{formataDinheiro(Number(servidor.liquido))}</Typography>
+                          <Typography style={{ fontSize: '20px', margin: '0px 5px'}}>»</Typography>
+                          <Typography>{` (${servidor.rgf})`}</Typography>
+                        </Grid>
+                      
+                      </Grid>
+
+                      <Grid item container justify="center" alignItems="center" sm={2} md={2} lg={2}>
+                        {this.state.servidoresSelecionados.includes(servidor) ? (
+                        <Button
+                          fullWidth
+                          variant="outlined"
+                          size="medium"
+                          color="secondary"
+                          type="button"
+                          onClick={() => this.handleDeleteServidor(index)}
+                          
+                        >
+                          Remover
+                        </Button>
+                        ): (
+                          <Button
+                            fullWidth
+                            variant="contained"
+                            size="medium"
+                            color="primary"
+                            type="button"
+                            onClick={() => this.setState({ servidoresSelecionados: [...this.state.servidoresSelecionados, servidor ]})}
+                            // style={{ backgroundColor: 'rgba(14, 70, 116)', color: '#fff' }}
+                          >
+                            Adicionar
+                          </Button> 
+                        )}
+                        
+                      </Grid>
+                    </Grid>
+                  ))}
+                  
+                </Grid>
+              </Grid>
             </Grid>
-
-
+            
           </DialogContentText>
         </DialogContent>
+        <DialogActions>
+          <Grid item container justify="flex-end" sm={12} md={12} lg={12}>
+            <Grid item sm={12} md={12} lg={12}>
+              <Button
+                disabled={!!(this.state.servidoresSelecionados.length < 2)}
+                fullWidth
+                variant="contained"
+                size="medium"
+                color="primary"
+                type="button"
+                onClick={this.fetchGraficoServidores}
+            
+              >
+                Comparar
+              </Button>  
+            </Grid>  
+          </Grid>
+        </DialogActions>
       </Dialog>
     )
   }
@@ -497,89 +622,76 @@ class Servidores extends Component {
 
     const open = Boolean(editarAnchorEl);
     return (
-      <Grid container spacing={1} style={{ padding: 10 }}>
-        {this.renderModalDetalhesServidor()}
+      <Grid container spacing={1} style={{ padding: 10, height: '100%' }}>
+        {this.renderModalSelectServidores()}
         <Grid item sm={12} md={12} lg={12}>
-          <LoadingIndicator loading={loading} />
-        </Grid>
-
-        <Grid item sm={12} md={12} lg={12}>
-          <Paper style={{ padding: 10 }}>
-            <Grid item sm={12} md={12} lg={12} style={{ padding: 10 }}>
-              {this.renderAccordion('FILTROS', this.renderFilters())}
+          <Paper style={{ padding: 10, height: '100%' }}>
+            <Grid item sm={12} md={12} lg={12}>
+              <Typography style={{ fontSize: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>COMPARADOR DE SERVIDORES</Typography>
             </Grid>
 
-            <Table style={{ width: '100%' }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center">RGF</TableCell>
-                  <TableCell align="center">Nome</TableCell>
-                  <TableCell align="center">Cargo</TableCell>
-                  <TableCell align="center">Regime</TableCell>
-                  <TableCell align="center"/>
-                  {/* <TableCell align="center">Referencia</TableCell>
-                  <TableCell align="center">Salário Bruto</TableCell>
-                  <TableCell align="center">Salário Líquido</TableCell>
-                  <TableCell align="center">Desconto</TableCell> */}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {servidores.filter(this.filterServidor).map(servidor => (
-                  <TableRow>
-                    <TableCell align="center">{servidor.rgf}</TableCell>
-                    <TableCell align="center">{servidor.nome}</TableCell>
-                    <TableCell align="center">{servidor.cargo}</TableCell>
-                    <TableCell align="center">{servidor.regime}</TableCell>
-                    <TableCell align="center" style={{ padding: '0px' }}>
-                      <IconButton
-                        arial-label="Mais"
-                        aria-owns={open ? `menu-${servidor.id}` : undefined}
-                        aria-haspopup="true"
-                        onClick={this.handleClickServidorMenu(servidor)}
-                      >
-                        <MoreVertIcon />
-                      </IconButton>
-                    </TableCell>
+            <Grid item container direction="row" spacing="center" justify="center" sm={12} md={12} lg={12} style={{ margin: '20px 0px' }}>
+              <Typography style={{ fontSize: '40px', fontWeight: 'bold', color: 'rgba(14, 70, 116)'  }}>
+                Compare
+              </Typography>
 
-                    {/* <TableCell align="center">{servidor.referencia}</TableCell>
-                    <TableCell align="center">{formataDinheiro(Number(servidor.bruto) || 0)}</TableCell>
-                    <TableCell align="center">{formataDinheiro(Number(servidor.liquido) || 0)}</TableCell>
-                    <TableCell align="center">{formataDinheiro(Number(servidor.desconto) | 0)}</TableCell> */}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+              <Typography style={{ fontSize: '40px', color: 'rgba(14, 70, 116, 0.7)' }}>
+                &nbsp;servidores!
+              </Typography>
 
-            <TablePagination
-              rowsPerPageOptions={rowsPerPageOptions}
-              labelRowsPerPage="Limite por página"
-              component="div"
-              count={qtdServidores}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onChangePage={this.handleChangePage('page')}
-              onChangeRowsPerPage={this.handleChangeRowsPerPage('page', 'rowsPerPage')}
-            />
+            </Grid>
 
-            {!!servidorSelecionado && !modalDetalhesServidor && (
-              <Menu
-                id={`menu-${servidorSelecionado.id}`}
-                anchorEl={editarAnchorEl}
-                open={open}
-                onClose={this.handleCloseServidorMenu}
-                PaperProps={{
-                  style: {
-                    maxHeight: 45 * 4.5,
-                    width: 250,
-                  },
-                }}
-              >
-                <MenuItem onClick={() => this.setState({ modalDetalhesServidor: true })}>Mais informações</MenuItem>
-              </Menu>
-            )}
 
+            <Grid item container direction="column" spacing="center" justify="center" alignItems="center" sm={12} md={12} lg={12}>
+              <Typography style={{ fontSize: '20px', color: '#909090'  }}>
+                Você pode comparar até 5 servidores!
+              </Typography>
+
+              <Typography style={{ fontSize: '20px', color: '#909090' }}>
+                Vamos ranqueá-las com base nos seus indicadores
+              </Typography>
+            </Grid>
+
+            <Grid  item container alignItems="center" justify="center" sm={12} md={12} lg={12} style={{ height: '50vh' }}>
+              <CustomButton onClick={() => this.setState({ modalSelectServidor: true })}>
+                <AddIcon />
+              </CustomButton>
+            </Grid>
+
+            <Grid ref='graficos'>
+              {!isEmpty(this.state.chartBruto) && (
+                    <Grid item sm={12} md={12} lg={12}>
+                      <Paper style={{ padding: 10, height: '100%', backgroundColor: 'rgba(14, 70, 116)' }}>
+                            <Grid item sm={12} md={12} lg={12}>
+                              <ReactFC {...this.state.chartBruto} />
+                            </Grid>
+                      </Paper>
+                    </Grid>
+                  )}
+
+                  {!isEmpty(this.state.chartLiquido) && (
+                    <Grid item sm={12} md={12} lg={12}>
+                      <Paper style={{ padding: 10, height: '100%', backgroundColor: 'rgba(14, 70, 116)' }}>
+                            <Grid item sm={12} md={12} lg={12}>
+                              <ReactFC {...this.state.chartLiquido} />
+                            </Grid>
+                      </Paper>
+                    </Grid>
+                  )}
+
+                  {!isEmpty(this.state.chartBruto) && (
+                    <Grid item sm={12} md={12} lg={12}>
+                      <Paper style={{ padding: 10, height: '100%', backgroundColor: 'rgba(14, 70, 116)'}}>
+                            <Grid item sm={12} md={12} lg={12}>
+                              <ReactFC {...this.state.chartDesconto} />
+                            </Grid>
+                      </Paper>
+                    </Grid>
+                  )}
+              </Grid>
           </Paper>
         </Grid>
+
       </Grid>
     );
   }
@@ -592,4 +704,4 @@ const mapDispatchToProps = dispatch => ({
 export default compose(
   connect(null, mapDispatchToProps),
   withStyles(Material, { withTheme: true }),
-)(Servidores);
+)(CompararServidores);

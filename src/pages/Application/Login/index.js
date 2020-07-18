@@ -153,12 +153,12 @@ class Login extends Component {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="http://localhost:3000/app/recuperacao" variant="body2">
+                <Link href="http://219f8c57ffa1.ngrok.io/app/recuperacao" variant="body2">
                   Esqueceu sua senha?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="http://localhost:3000/app/cadastro" variant="body2">
+                <Link href="http://219f8c57ffa1.ngrok.io/app/cadastro" variant="body2">
                   {"Você não tem uma conta? Se inscreva!"}
                 </Link>
               </Grid>

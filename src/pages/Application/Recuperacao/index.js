@@ -90,7 +90,7 @@ export default function SignUp() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="http://localhost:3000/app/login" variant="body2">
+              <Link href="http://219f8c57ffa1.ngrok.io/app/login" variant="body2">
                 Você lembrou sua senha? Entre.
               </Link>
             </Grid>

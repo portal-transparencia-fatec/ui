@@ -24,5 +24,15 @@ export default class ServidoresService {
     return data;
   }  
 
+  static async getAllByNome(nome) {
+    const { data } = await api.get(`/servidores/nome/${nome}`);
+    return data;
+  }
+
+  static async getAllSalariosByRgfs(rgfs) {
+    const { data } = await api.post(`/servidores/grafico/salarios/`, rgfs);
+    return data;
+  } 
+
   
 }
